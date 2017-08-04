@@ -16,6 +16,10 @@ public class GamePanel extends JPanel {
 		this.gameObjects=gameObjects;
 		
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)defined paintcomponent to game objects shown in game panel
+	 */
 	
 	@Override
 	protected void paintComponent(Graphics g) {

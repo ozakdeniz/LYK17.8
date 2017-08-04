@@ -10,6 +10,13 @@ import java.awt.Rectangle;
 		private int y;
 		private int radius;
 		private Color color;
+		/**
+		 * 
+		 * @param x coordinate x
+		 * @param y coordinate y
+		 * @param radius radius of circle
+		 * @param color colors
+		 */
 		
 		public GameObject(int x, int y, int radius, Color color) {
 			this.x =x;
@@ -18,13 +25,19 @@ import java.awt.Rectangle;
 			this.color =color;
 		}
 		
-		
+		/**
+		 * 
+		 * @param g2d drawing method at 2D called from graphics2d library
+		 */
 		public void draw(Graphics2D g2d) {
 			g2d.setColor(getColor());
 			g2d.fillOval(getX(), getY(), getRadius(), getRadius());
 		}
-		
-		public Rectangle getRectangle() {
+		/**
+		 * 
+		 * @return it created to count collisions between game objects
+		 */
+		public Rectangle getRectangle() {// cisimler arası kesişmeleri ölçmek için oluşturduk
 			Rectangle rect = new Rectangle(getX(),getY(),getRadius(),getRadius());
 			return rect;
 		}	

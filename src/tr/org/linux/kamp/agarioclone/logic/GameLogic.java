@@ -9,13 +9,21 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import tr.org.linux.kamp.agarioclone.model.Chip;
+import tr.org.linux.kamp.agarioclone.model.Difficulty30temmuz;
 import tr.org.linux.kamp.agarioclone.model.Enemy;
 import tr.org.linux.kamp.agarioclone.model.GameObject;
 import tr.org.linux.kamp.agarioclone.model.Mine;
 import tr.org.linux.kamp.agarioclone.model.Player;
 import tr.org.linux.kamp.agarioclone.view.GameFrame;
 import tr.org.linux.kamp.agarioclone.view.GamePanel;
-
+/**
+ * 
+ * @author ozgur
+ * @version 1.0
+ * 
+ *
+ *
+ */
 public class GameLogic {
 	
 	//1 playerı oluşturduk hareket tanımladık mouse haraketi ile
@@ -32,7 +40,6 @@ public class GameLogic {
 	//12 ince ayarları yaptık
 	
 	
-
 	private boolean isGameRunning = true;
 	private int xTarget;//mouse için
 	private int yTarget;
@@ -49,10 +56,19 @@ public class GameLogic {
 	private GamePanel gamePanel;//penel
 
 	private Random random = new Random();// random tanımladık
+	
+	/**
+	 * 
+	 * @param playerName defined here as player name
+	 * @param selectedColor defined here colors as player choose them
+	 * @param difficulty defined here to choose one of easy normal hard properties
+	 */
+	
+	
 
-	public GameLogic() {
+	public GameLogic(String playerName, Color selectedColor, Difficulty30temmuz difficulty) {
 		
-		player = new Player(20, 20, 20, Color.CYAN, 3);// playerın özelliklerini tanımladık
+		player = new Player(20, 20, 20, selectedColor, 1, playerName);// playerın özelliklerini tanımladık
 
 		gameObjects = new ArrayList<GameObject>();// oyun nesnelerini tutucağımız liste oyuncu düşmanlar yemler..
 		chipsToRemove = new ArrayList<GameObject>();// yenilen yemleri tutucağımız liste
@@ -63,13 +79,47 @@ public class GameLogic {
 
 		gameFrame = new GameFrame();
 		gamePanel = new GamePanel(gameObjects);
+		/**
+		 * add frame and panel to game
+		 */
+		
+		switch (difficulty) {
+		case EASY:
+			
+			fillChips(100);// yemleri oyuna ekledik
+			fillMines(30);// mayınları oyuna ekledik
+			fillEnemies(5);//düşmanları oyuna ekledik
 
-		fillChips(40);// yemleri oyuna ekledik
+			break;
+		
+		case NORMAL :
+			
+			fillChips(100);// yemleri oyuna ekledik
+			fillMines(40);// mayınları oyuna ekledik
+			fillEnemies(10);//düşmanları oyuna ekledik
+
+			break;
+			
+		case HARD:
+			
+			fillChips(100);// yemleri oyuna ekledik
+			fillMines(50);// mayınları oyuna ekledik
+			fillEnemies(20);//düşmanları oyuna ekledik
+
+			break;
+			/**
+			 * defined difficulty
+			 */
+		}
+		
+
 		addMouseListener();
-		fillMines(15);// mayınları oyuna ekledik
-		fillEnemies(5);//düşmanları oyuna ekledik
 
 	}
+	/**
+	 * checks collisions
+	 */
+	
 
 	private synchronized void checkCollisions() {// çarpışmaları kontrol ediyoruz yediklerimizi sildiriyoruz
 
@@ -142,7 +192,9 @@ public class GameLogic {
 
 	}
 
-	
+	/**
+	 * add new objects when they destroy at check collision
+	 */
 	
 	
 	private synchronized void addNewObjects() {// yediklerimizi yeniden oluşturuyoruz ki yem bitip oyun bitmesin
@@ -163,7 +215,9 @@ public class GameLogic {
 	
 	private synchronized void movePlayer() {// oyuncunun hareketleri mouse hareketine göre tanımlandı
 		// x ve y koordinatlarında hareketler tanımladık
-
+/**
+ * defined move
+ */
 		if (xTarget > player.getX()) {
 			player.setX(player.getX() + player.getSpeed());
 		} else if (xTarget < player.getX()) {
@@ -182,6 +236,9 @@ public class GameLogic {
 	
 	
 	private synchronized void moveEnemies() {
+		/**
+		 * defined move
+		 */
 		
 		for(GameObject gameObject : gameObjects) {//game objectin içinde speed yok bu yüzden diğerleri gibi yazamadık
 			if (gameObject instanceof Enemy) {//enemy olarak kullanmak istediğimiz için casting sağlaması yaptık
@@ -247,6 +304,9 @@ public class GameLogic {
 	
 	private boolean calculateNewDistanceToEnemy(Enemy enemy, int distance, int x, int y) {
 
+		/**
+		 * defined distance enemy from player 
+		 */
 		int newDistance =(int)Point.distance(player.getX(), player.getY(), x, y);
 		if(newDistance > distance) {
 			enemy.setX(x);
@@ -260,6 +320,9 @@ public class GameLogic {
 	
 	private void fillChips(int n) {// yem oluşma metodunu oluşturduk özelliklerini yazdık
 
+		/**
+		 * defined creating chips method
+		 */
 		// yemleri oluşturduk yemlerle doldur metodu oluşturduk ve yemlerin
 		// özelliklerini bastırdık
 		for (int i = 0; i < n; i++) {
@@ -283,7 +346,9 @@ public class GameLogic {
 	
 	
 	private void fillMines(int n) {// mayının oluşma merodunu yaptık
-
+/**
+ *  defined creating mines method
+ */
 		for (int i = 0; i < n; i++) {
 			Mine mine = new Mine(random.nextInt(1000), random.nextInt(1000), 20, Color.YELLOW);
 
@@ -303,7 +368,9 @@ public class GameLogic {
 	
 
 	private void fillEnemies(int n) {
-
+		/**
+		 *  defined creating enemies method
+		 */
 		for (int i = 0; i < n; i++) {
 			Enemy enemy = new Enemy(random.nextInt(1000), random.nextInt(1000), (random.nextInt(10) + 10), Color.RED, 1,"enemy");
 			while (player.getRectangle().intersects(enemy.getRectangle())) {
@@ -340,7 +407,7 @@ public class GameLogic {
 					addNewObjects();
 					gamePanel.repaint();
 					try {
-						Thread.sleep(50);
+						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						// TODO: handle exception
 						e.printStackTrace();
@@ -352,7 +419,9 @@ public class GameLogic {
 	}
 
 	
-	
+	/**
+	 * starts the game
+	 */
 	
 	public void startApplication() {
 		gameFrame.setContentPane(gamePanel);
@@ -361,7 +430,9 @@ public class GameLogic {
 
 	}
 
-	
+	/**
+	 * mouse movements
+	 */
 	
 	
 	private void addMouseListener() {// mouse hareketlerine göre hareket kabiliyetini tanımlicaz
